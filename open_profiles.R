@@ -9,7 +9,7 @@ require(MASS)
 require(stringr)
 require(stringi)
 
-open_profiles <- Function(profile, PARAM_NAME) {
+open_profiles <- function(profile, PARAM_NAME) {
 	# profile is a full path to the file, PARAM_NAME is consistent
 	# with bgc-argo denomination
 
