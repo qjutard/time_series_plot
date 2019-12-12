@@ -40,9 +40,20 @@ plot_TS <- function(M) {
 	param = param[which(!is.na(pres))]
 	pres = pres[which(!is.na(pres))]
 		
+	colors = colormap(param)
+	x11(width=14, height=8)
+	layout(t(1:2), widths=c(10,1))	
+	
+	
 	#dev.new(width=600, height=400, unit="px")	
-	plot(juld, pres, col=colormap(param)$zcol, pch=16, cex=0.5,ylim=rev(range(pres, na.rm=T)))
-	#image.plot(juld,pres,param)	
+	#x11(width=7, height=4)
+	par(mar=c(5,4,4,0.5))
+	plot(juld, pres, col=colors$zcol, pch=16, cex=0.5,ylim=rev(range(pres, na.rm=T)))
+	#image.plot(juld,pres,param)
+
+	par(mar=c(5,1,4,2.5))
+	image(y=colors$breaks, z=t(colors$breaks), col=colors$col, axes=FALSE)	
+	axis(4, cex.axis=0.8, mgp=c(0,0.5,0))
 
 	return(0)
 }
