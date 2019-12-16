@@ -17,6 +17,8 @@ source("plot_TS.R")
 
 WMO = "6901524"
 PARAM_NAME = "CHLA"
+zoom_pres = c(0,300)
+zoom_param = c(0,15)
 
 ### Build list of file names from WMO and argo_index
 
@@ -35,4 +37,4 @@ M = mcmapply(open_profiles, name_list, MoreArgs=list(PARAM_NAME), mc.cores=numCo
 ### TODO
 ### plot
 
-ret = plot_TS(M)
+ret = plot_TS(M, zoom_pres=zoom_pres, zoom_param=zoom_param)
