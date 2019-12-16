@@ -2,7 +2,7 @@
 # This script does the time series plot
 #############################################################################
 
-plot_TS <- function(M, PARAM_NAME, zoom_pres=NULL, zoom_param=NULL, date_axis=FALSE) {
+plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, date_axis=FALSE) {
 
 	### find array dimensions
 	n_prof = dim(M)[2]
@@ -68,7 +68,10 @@ plot_TS <- function(M, PARAM_NAME, zoom_pres=NULL, zoom_param=NULL, date_axis=FA
 	}
 		
 	colors = colormap(param, zlim=c(min(param), max(param)))
-	x11(width=14, height=8)
+	
+	
+	png(plot_name, width = 800, height = 400)
+	#x11(width=14, height=8)
 	layout(t(1:2), widths=c(10,1))	
 	
 	#dev.new(width=600, height=400, unit="px")	
@@ -82,6 +85,8 @@ plot_TS <- function(M, PARAM_NAME, zoom_pres=NULL, zoom_param=NULL, date_axis=FA
 	image(y=colors$breaks, z=t(colors$breaks), col=colors$col, axes=FALSE)	
 	axis(4, cex.axis=0.8, mgp=c(0,0.5,0))
 	title(main=param_units)
+	
+	dev.off()
 
 	return(0)
 }

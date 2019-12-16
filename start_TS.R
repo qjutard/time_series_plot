@@ -10,10 +10,10 @@ library(stringr)
 library(parallel)
 library(stringi)
 
-source("pathways.R")
-source("file_names.R")
-source("open_profiles.R")
-source("plot_TS.R")
+source("~/Documents/time_series/time_series_plot/pathways.R")
+source(paste(path_to_source, "file_names.R", sep=""))
+source(paste(path_to_source, "open_profiles.R", sep=""))
+source(paste(path_to_source, "plot_TS.R", sep=""))
 
 ### Get command arguments
 
@@ -24,10 +24,15 @@ PARAM_NAME = uf[2]
 zoom_pres = uf[3]
 zoom_param = uf[4]
 date_axis = as.logical(uf[5])
+plot_name = uf[6]
 
 if (WMO=="NA" | PARAM_NAME=="NA") {
     print("Please specify at least a WMO and a parameter name (see -h for help)")
     stop()
+}
+
+if (plot_name=="NA") {
+    plot_name = paste("BGTS_", WMO, "_", PARAM_NAME, ".png", sep="")
 }
 
 # convert text inputs to usable data
@@ -60,4 +65,4 @@ M = mcmapply(open_profiles, name_list, MoreArgs=list(PARAM_NAME), mc.cores=numCo
 
 ### plot
 
-ret = plot_TS(M, PARAM_NAME=PARAM_NAME, zoom_pres=zoom_pres, zoom_param=zoom_param, date_axis=date_axis)
+ret = plot_TS(M, PARAM_NAME=PARAM_NAME, plot_name=plot_name, zoom_pres=zoom_pres, zoom_param=zoom_param, date_axis=date_axis)
