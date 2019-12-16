@@ -22,7 +22,7 @@ Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-z
                     as 'MIN.min;MAX.max' with the single quotation marks.
 [-n <plot_name>] : Specify a file name for the output (with pathway), if not specified
                    the default is 'BGTS_WMO_PARAM_NAME.png' where WMO is replaced by the
-                   7 digit WMO number ans PARAM_NAME by the variable name. Please use
+                   7 digit WMO number and PARAM_NAME by the variable name. Please use
                    a '.png' extension in your file name.
 [-z <zoom_pres>] : Specify a pressure interval, should be formatted as 'MIN.min;MAX.max'
                    with the single quotation marks.
