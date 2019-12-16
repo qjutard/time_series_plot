@@ -36,9 +36,21 @@ open_profiles <- function(profile_name, PARAM_NAME) {
 	### get the date (JULD)
 	JULD = ncvar_get(filenc, "JULD")
 	JULD = JULD[id_prof]
+	
+	### get the units
+	param_units = ncatt_get(filenc, PARAM_NAME, attname = "units")
+	
+	### get the profile index
+	len = str_length(profile_name)
+	profile_id = str_sub(profile_name, len-6, len-3) # extract 4 characters to '_000' or '000D'
+	if (str_sub(profile_id,1,1)=="_") { # ascending profile
+	    profile_id = as.numeric(str_sub(profile_id,2))
+	} else {
+	    profile_id = as.numeric(str_sub(profile_id,1,3)) - 0.5 # descending profiles are pur on half indices preceding the corresponding ascending profile
+	}
 
 	nc_close(filenc)
 	
-	return(list("PARAM"=PARAM, "PRES"=PRES, "PARAM_QC"=PARAM_QC, "JULD"=JULD))
+	return(list("PARAM"=PARAM, "PRES"=PRES, "PARAM_QC"=PARAM_QC, "JULD"=JULD, "param_units"=param_units, "profile_id"=profile_id))
 }
 

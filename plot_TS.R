@@ -2,7 +2,7 @@
 # This script does the time series plot
 #############################################################################
 
-plot_TS <- function(M, zoom_pres=NULL, zoom_param=NULL) {
+plot_TS <- function(M, PARAM_NAME, zoom_pres=NULL, zoom_param=NULL, date_axis=FALSE) {
 
 	### find array dimensions
 	n_prof = dim(M)[2]
@@ -17,6 +17,8 @@ plot_TS <- function(M, zoom_pres=NULL, zoom_param=NULL) {
 	param = array(NA, c(n_depth, n_prof))
 	param_qc = array(NA, c(n_depth, n_prof))
 	juld = array(NA, c(n_depth, n_prof))
+	param_units = rep(NA, n_prof)
+	profile_id = array(NA, c(n_depth, n_prof))
 	
 	for (i in seq(1,n_prof)) {
 	
@@ -25,7 +27,12 @@ plot_TS <- function(M, zoom_pres=NULL, zoom_param=NULL) {
 		pres[1:n_pres_i, i] = M[,i]$PRES 
 		param[1:n_pres_i, i] = M[,i]$PARAM 
 		param_qc[1:n_pres_i, i] = M[,i]$PARAM_QC 
-		juld[1:n_pres_i, i] = rep(M[,i]$JULD, n_pres_i) 
+		juld[1:n_pres_i, i] = rep(M[,i]$JULD, n_pres_i)
+		profile_id[1:n_pres_i, i] = rep(M[,i]$profile_id, n_pres_i)
+		
+		if (M[,i]$param_units$hasatt) {
+		    param_units[i] = M[,i]$param_units$value
+		}
 
 	}
 	
@@ -34,6 +41,7 @@ plot_TS <- function(M, zoom_pres=NULL, zoom_param=NULL) {
 	param = as.vector(param)
 	param_qc = as.vector(param_qc)
 	juld = as.vector(juld)
+	profile_id = as.vector(profile_id)
 	
 	if (!is.null(zoom_pres)) {
 	    pres[which( pres<zoom_pres[1] | pres>zoom_pres[2] )] = NA
@@ -42,13 +50,22 @@ plot_TS <- function(M, zoom_pres=NULL, zoom_param=NULL) {
 	    pres[which( param<zoom_param[1] | param>zoom_param[2] )] = NA   # pres is used as the reference to insert NA
 	}
 	
-	
+	profile_id = profile_id[which(!is.na(pres))]
 	juld = juld[which(!is.na(pres))]
 	param_qc = param_qc[which(!is.na(pres))]
 	param = param[which(!is.na(pres))]
 	pres = pres[which(!is.na(pres))]
 	
+	# define labeling parameters
 	dates = as.Date(juld, origin='1950-01-01')
+	param_units = unique(param_units[which(!is.na(param_units))])
+	if (date_axis) {
+	    Xaxis = dates
+	    Xlabel = "Time"
+	} else {
+	    Xaxis = profile_id
+	    Xlabel = "Profile number"
+	}
 		
 	colors = colormap(param, zlim=c(min(param), max(param)))
 	x11(width=14, height=8)
@@ -56,12 +73,15 @@ plot_TS <- function(M, zoom_pres=NULL, zoom_param=NULL) {
 	
 	#dev.new(width=600, height=400, unit="px")	
 	par(mar=c(5,4,4,0.5))
-	plot(dates, pres, col=colors$zcol, pch=16, cex=0.5,ylim=rev(range(pres, na.rm=T)))
+	plot(Xaxis, pres, col=colors$zcol, pch=16, cex=0.5, ylim=rev(range(pres, na.rm=T)), xlab=Xlabel, ylab="Pressure (decibar)")
+	title(main=PARAM_NAME)
 	#image.plot(juld,pres,param)
-
+    
+	# colorbar
 	par(mar=c(5,1,4,2.5))
 	image(y=colors$breaks, z=t(colors$breaks), col=colors$col, axes=FALSE)	
 	axis(4, cex.axis=0.8, mgp=c(0,0.5,0))
+	title(main=param_units)
 
 	return(0)
 }

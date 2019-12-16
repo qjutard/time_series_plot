@@ -19,6 +19,7 @@ WMO = "6901524"
 PARAM_NAME = "CHLA"
 zoom_pres = c(0,300)
 zoom_param = c(0,15)
+date_axis = FALSE
 
 ### Build list of file names from WMO and argo_index
 
@@ -34,7 +35,6 @@ numCores = detectCores()
 M = mcmapply(open_profiles, name_list, MoreArgs=list(PARAM_NAME), mc.cores=numCores, USE.NAMES=FALSE)
 
 
-### TODO
 ### plot
 
-ret = plot_TS(M, zoom_pres=zoom_pres, zoom_param=zoom_param)
+ret = plot_TS(M, PARAM_NAME=PARAM_NAME, zoom_pres=zoom_pres, zoom_param=zoom_param, date_axis=date_axis)
