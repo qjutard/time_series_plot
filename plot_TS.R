@@ -30,9 +30,7 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, d
 		juld[1:n_pres_i, i] = rep(M[,i]$JULD, n_pres_i)
 		profile_id[1:n_pres_i, i] = rep(M[,i]$profile_id, n_pres_i)
 		
-		if (M[,i]$param_units$hasatt) {
-		    param_units[i] = M[,i]$param_units$value
-		}
+	    param_units[i] = M[,i]$param_units
 
 	}
 	
@@ -47,7 +45,8 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, d
 	    pres[which( pres<zoom_pres[1] | pres>zoom_pres[2] )] = NA
 	}
 	if (!is.null(zoom_param)) {
-	    pres[which( param<zoom_param[1] | param>zoom_param[2] )] = NA   # pres is used as the reference to insert NA
+	    param[which( param<zoom_param[1] )] = zoom_param[1]   
+	    param[which( param>zoom_param[2] )] = zoom_param[2]  
 	}
 	
 	profile_id = profile_id[which(!is.na(pres))]

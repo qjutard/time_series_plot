@@ -18,7 +18,10 @@ open_profiles <- function(profile_name, PARAM_NAME) {
     parameters = ncvar_get(filenc,"STATION_PARAMETERS")
 	param_name_padded = str_pad(PARAM_NAME, 64, "right")
 	id_prof = which(parameters==param_name_padded, arr.ind=TRUE)[2]
-	
+	if (is.na(id_prof))	{
+		return(list("PARAM"=NA, "PRES"=NA, "PARAM_QC"=NA, "JULD"=NA, "param_units"=NA, "profile_id"=NA))
+	}
+
 	### get the parameter
 	PARAM = ncvar_get(filenc, PARAM_NAME)
 	PARAM = PARAM[,id_prof]
@@ -38,7 +41,7 @@ open_profiles <- function(profile_name, PARAM_NAME) {
 	JULD = JULD[id_prof]
 	
 	### get the units
-	param_units = ncatt_get(filenc, PARAM_NAME, attname = "units")
+	param_units = ncatt_get(filenc, PARAM_NAME, attname = "units")$value
 	
 	### get the profile index
 	len = str_length(profile_name)
