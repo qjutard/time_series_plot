@@ -49,11 +49,12 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, d
 	    param[which( param>zoom_param[2] )] = zoom_param[2]  
 	}
 	
-	profile_id = profile_id[which(!is.na(pres))]
-	juld = juld[which(!is.na(pres))]
-	param_qc = param_qc[which(!is.na(pres))]
-	param = param[which(!is.na(pres))]
-	pres = pres[which(!is.na(pres))]
+	not_na_axis = which( !is.na(pres) & !is.na(param) )
+	profile_id = profile_id[not_na_axis]
+	juld = juld[not_na_axis]
+	param_qc = param_qc[not_na_axis]
+	param = param[not_na_axis]
+	pres = pres[not_na_axis]
 	
 	# define labeling parameters
 	dates = as.Date(juld, origin='1950-01-01')
