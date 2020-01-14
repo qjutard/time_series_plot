@@ -19,15 +19,16 @@ open_profiles <- function(profile_name, PARAM_NAME, core_files=FALSE) {
     if (core_files) {padding = 16} else {padding = 64}
 	param_name_padded = str_pad(PARAM_NAME, padding, "right")
 	id_prof_arr = which(parameters==param_name_padded, arr.ind=TRUE)
-	if (is.null(dim(id_prof_arr))) { #if id_prof_arr is a vector, there is only one PARAM_NAME profile
+	if (length(id_prof_arr)==0) {
+	    return(list("PARAM"=NA, "PRES"=NA, "PARAM_QC"=NA, "JULD"=NA, "param_units"=NA, "profile_id"=NA))
+	}
+	if (length(id_prof_arr)==2) { #if id_prof_arr is a vector, there is only one PARAM_NAME profile
 	    id_prof = id_prof_arr[2]
 	} else {
 	    id_prof = id_prof_arr[1,2] #take the first profile
 	    print(paste("Several profiles of", PARAM_NAME,"detected, only using the first one"))
 	}
-	if (is.na(id_prof))	{
-		return(list("PARAM"=NA, "PRES"=NA, "PARAM_QC"=NA, "JULD"=NA, "param_units"=NA, "profile_id"=NA))
-	}
+	
 
 	### get the parameter
 	PARAM = ncvar_get(filenc, PARAM_NAME, start=c(1,id_prof), count=c(-1,1))
