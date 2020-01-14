@@ -8,7 +8,7 @@ require(MASS)
 require(stringr)
 require(stringi)
 
-open_profiles <- function(profile_name, PARAM_NAME) {
+open_profiles <- function(profile_name, PARAM_NAME, core_files=FALSE) {
 	# profile_name is a full path to the file, PARAM_NAME is consistent
 	# with bgc-argo denomination
 
@@ -16,8 +16,15 @@ open_profiles <- function(profile_name, PARAM_NAME) {
 	
 	### find the profile index	
     parameters = ncvar_get(filenc,"STATION_PARAMETERS")
-	param_name_padded = str_pad(PARAM_NAME, 64, "right")
-	id_prof = which(parameters==param_name_padded, arr.ind=TRUE)[2]
+    if (core_files) {padding = 16} else {padding = 64}
+	param_name_padded = str_pad(PARAM_NAME, padding, "right")
+	id_prof_arr = which(parameters==param_name_padded, arr.ind=TRUE)
+	if (is.null(dim(id_prof_arr))) { #if id_prof_arr is a vector, there is only one PARAM_NAME profile
+	    id_prof = id_prof_arr[2]
+	} else {
+	    id_prof = id_prof_arr[1,2] #take the first profile
+	    print(paste("Several profiles of", PARAM_NAME,"detected, only using the first one"))
+	}
 	if (is.na(id_prof))	{
 		return(list("PARAM"=NA, "PRES"=NA, "PARAM_QC"=NA, "JULD"=NA, "param_units"=NA, "profile_id"=NA))
 	}

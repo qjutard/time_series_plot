@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() { 
-	echo "Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-z <zoom_pres>] [-dh]
+	echo "Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-z <zoom_pres>] [-Cdh]
 Do '$0 -h' for help" 1>&2
 	exit 1 
 }
@@ -11,7 +11,7 @@ helprint() {
 
 BGTS does a time series plot of a BGC-ARGO parameter from a chosen float.
 
-Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-z <zoom_pres>] [-dh]
+Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-z <zoom_pres>] [-Cdh]
 
 ### Options
 
@@ -26,6 +26,7 @@ Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-z
                    a '.png' extension in your file name.
 [-z <zoom_pres>] : Specify a pressure interval, should be formatted as 'MIN.min;MAX.max'
                    with the single quotation marks.
+[-C] : Use core argo data from core argo files, to be used with a core argo PARAM_NAME
 [-d] : Use dates as horizontal axis instead of profile index.
 [-h] : help
 
@@ -40,8 +41,9 @@ zoom_pres=NA
 zoom_param=NA
 date_axis=FALSE
 plot_name=NA
+core_files=FALSE
 
-while getopts W:P:c:n:z:dh option
+while getopts W:P:c:n:z:dCh option
 do
 case "${option}"
 in
@@ -51,10 +53,11 @@ c) zoom_param=${OPTARG};;
 n) plot_name=${OPTARG};;
 z) zoom_pres=${OPTARG};;
 d) date_axis=TRUE;;
+C) core_files=TRUE;;
 h) helprint;;
 *) usage;;
 esac
 done
 
 
-Rscript ~/Documents/time_series/time_series_plot/start_TS.R $WMO $PARAM_NAME $zoom_pres $zoom_param $date_axis $plot_name
+Rscript ~/Documents/time_series/time_series_plot/start_TS.R $WMO $PARAM_NAME $zoom_pres $zoom_param $date_axis $plot_name $core_files

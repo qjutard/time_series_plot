@@ -6,7 +6,7 @@
 require(stringr)
 require(stringi)
 
-file_names <- function(index_ifremer, path_to_netcdf_before_WMO, WMO, path_to_netcdf_after_WMO) {
+file_names <- function(index_ifremer, path_to_netcdf_before_WMO, WMO, path_to_netcdf_after_WMO, core_files=FALSE) {
 	
 	# TODO : implement
 	
@@ -21,7 +21,8 @@ file_names <- function(index_ifremer, path_to_netcdf_before_WMO, WMO, path_to_ne
 	
 	# build file names with '?'
 	prof_id = str_sub(prof_id, 3) # remove 'MD'
-	prof_id = paste(path_to_netcdf_before_WMO, WMO, path_to_netcdf_after_WMO, "B?", prof_id, sep="")
+	if (core_files) {prefix = "?"} else {prefix = "B?"}
+	prof_id = paste(path_to_netcdf_before_WMO, WMO, path_to_netcdf_after_WMO, prefix, prof_id, sep="")
 	
 	# identify R or D file
     name_list = system2("ls", prof_id, stdout=TRUE) 

@@ -25,6 +25,7 @@ zoom_pres = uf[3]
 zoom_param = uf[4]
 date_axis = as.logical(uf[5])
 plot_name = uf[6]
+core_files = as.logical(uf[7])
 
 if (WMO=="NA" | PARAM_NAME=="NA") {
     print("Please specify at least a WMO and a parameter name (see -h for help)")
@@ -53,14 +54,14 @@ if (zoom_param=="NA") {
 
 index_ifremer = read.table(path_to_index_ifremer, skip=9, sep = ",")
 
-name_list = file_names(index_ifremer, path_to_netcdf_before_WMO, WMO, path_to_netcdf_after_WMO)
+name_list = file_names(index_ifremer, path_to_netcdf_before_WMO, WMO, path_to_netcdf_after_WMO, core_files)
 
 
 ### Get a list with information on all profiles
 #index_greylist = read.csv(path_to_index_greylist, sep = ",") # if greylist is useful at some point
 
 numCores = detectCores()
-M = mcmapply(open_profiles, name_list, MoreArgs=list(PARAM_NAME), mc.cores=numCores, USE.NAMES=FALSE)
+M = mcmapply(open_profiles, name_list, MoreArgs=list(PARAM_NAME, core_files), mc.cores=numCores, USE.NAMES=FALSE)
 
 
 ### plot
