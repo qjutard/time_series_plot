@@ -16,8 +16,13 @@ open_profiles <- function(profile_name, PARAM_NAME, core_files=FALSE) {
 	
 	### find the profile index	
     parameters = ncvar_get(filenc,"STATION_PARAMETERS")
+    
+    PARAM_NAME_UNADJUSTED = PARAM_NAME
+    if (str_sub(PARAM_NAME, -9, -1)=="_ADJUSTED") { PARAM_NAME_UNADJUSTED = str_sub(PARAM_NAME, 1, -10) }
+    
     if (core_files) {padding = 16} else {padding = 64}
-	param_name_padded = str_pad(PARAM_NAME, padding, "right")
+	param_name_padded = str_pad(PARAM_NAME_UNADJUSTED, padding, "right")
+	
 	id_prof_arr = which(parameters==param_name_padded, arr.ind=TRUE)
 	if (length(id_prof_arr)==0) {
 	    return(list("PARAM"=NA, "PRES"=NA, "PARAM_QC"=NA, "JULD"=NA, "param_units"=NA, "profile_id"=NA))
