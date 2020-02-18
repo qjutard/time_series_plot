@@ -42,8 +42,9 @@ zoom_param=NA
 date_axis=FALSE
 plot_name=NA
 core_files=FALSE
+interactive=FALSE
 
-while getopts W:P:c:n:z:dCh option
+while getopts W:P:c:n:z:dCih option
 do
 case "${option}"
 in
@@ -54,10 +55,11 @@ n) plot_name=${OPTARG};;
 z) zoom_pres=${OPTARG};;
 d) date_axis=TRUE;;
 C) core_files=TRUE;;
+i) interactive=TRUE;;
 h) helprint;;
 *) usage;;
 esac
 done
 
 
-Rscript ~/Documents/time_series/time_series_plot/start_TS.R $WMO $PARAM_NAME $zoom_pres $zoom_param $date_axis $plot_name $core_files
+Rscript ~/Documents/time_series/time_series_plot/start_TS.R $WMO $PARAM_NAME $zoom_pres $zoom_param $date_axis $plot_name $core_files $interactive

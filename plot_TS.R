@@ -2,7 +2,7 @@
 # This script does the time series plot
 #############################################################################
 
-plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, date_axis=FALSE) {
+plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, date_axis=FALSE, interactive_plot=FALSE) {
 
 	### find array dimensions
 	n_prof = dim(M)[2]
@@ -70,23 +70,41 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, d
 	colors = colormap(param, zlim=c(min(param), max(param)))
 	
 	
-	png(plot_name, width = 800, height = 400)
-	#x11(width=14, height=8)
-	layout(t(1:2), widths=c(10,1))	
 	
-	#dev.new(width=600, height=400, unit="px")	
-	par(mar=c(5,4,4,0.5))
-	plot(Xaxis, pres, col=colors$zcol, pch=16, cex=0.5, ylim=rev(range(pres, na.rm=T)), xlab=Xlabel, ylab="Pressure (decibar)")
-	title(main=PARAM_NAME)
-	#image.plot(juld,pres,param)
-    
-	# colorbar
-	par(mar=c(5,1,4,2.5))
-	image(y=colors$breaks, z=t(colors$breaks), col=colors$col, axes=FALSE)	
-	axis(4, cex.axis=0.8, mgp=c(0,0.5,0))
-	title(main=param_units)
 	
-	dev.off()
+	if (interactive_plot) {
+	    
+	    require(plotly)
+	    require(htmlwidgets)
+	    
+	    d = data.frame(x=Xaxis, y=pres, param=param)
+	    p <- plot_ly( type = 'scatter',
+	        data = d, x = ~x, y = ~y,
+	        color = ~param
+	    )
+	    
+	    saveWidget(p, file=plot_name)
+	    
+	} else {
+	    
+	    png(plot_name, width = 800, height = 400)
+	    
+    	layout(t(1:2), widths=c(10,1))	
+    	
+    	par(mar=c(5,4,4,0.5))
+    	plot(Xaxis, pres, col=colors$zcol, pch=16, cex=0.5, ylim=rev(range(pres, na.rm=T)), xlab=Xlabel, ylab="Pressure (decibar)")
+    	title(main=PARAM_NAME)
+    	#image.plot(juld,pres,param)
+        
+    	# colorbar
+    	par(mar=c(5,1,4,2.5))
+    	image(y=colors$breaks, z=t(colors$breaks), col=colors$col, axes=FALSE)	
+    	axis(4, cex.axis=0.8, mgp=c(0,0.5,0))
+    	title(main=param_units)
+    	
+    	dev.off()
+	
+	}
 
 	return(0)
 }
