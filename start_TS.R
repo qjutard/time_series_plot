@@ -52,18 +52,16 @@ if (zoom_param=="NA") {
 
 ### Build list of file names from WMO and argo_index
 
-index_ifremer = read.table(path_to_index_ifremer, skip=9, sep = ",")
+index_ifremer = read.table(path_to_index_ifremer, sep=",", header = T)
+#index_greylist = read.csv(path_to_index_greylist, sep = ",") # if greylist is useful at some point
 
-name_list = file_names(index_ifremer, path_to_netcdf_before_WMO, WMO, path_to_netcdf_after_WMO, core_files)
+name_list = file_names(index_ifremer, path_to_netcdf, WMO, core_files)
 
 
 ### Get a list with information on all profiles
-#index_greylist = read.csv(path_to_index_greylist, sep = ",") # if greylist is useful at some point
-
 numCores = detectCores()
 M = mcmapply(open_profiles, name_list, MoreArgs=list(PARAM_NAME, core_files), mc.cores=numCores, USE.NAMES=FALSE)
 
 
 ### plot
-
 ret = plot_TS(M, PARAM_NAME=PARAM_NAME, plot_name=plot_name, zoom_pres=zoom_pres, zoom_param=zoom_param, date_axis=date_axis)
