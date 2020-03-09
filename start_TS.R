@@ -26,6 +26,7 @@ zoom_param = uf[4]
 date_axis = as.logical(uf[5])
 plot_name = uf[6]
 core_files = as.logical(uf[7])
+logscale = as.logical(uf[8])
 
 if (WMO=="NA" | PARAM_NAME=="NA") {
     print("Please specify at least a WMO and a parameter name (see -h for help)")
@@ -64,4 +65,4 @@ M = mcmapply(open_profiles, name_list, MoreArgs=list(PARAM_NAME, core_files), mc
 
 
 ### plot
-ret = plot_TS(M, PARAM_NAME=PARAM_NAME, plot_name=plot_name, zoom_pres=zoom_pres, zoom_param=zoom_param, date_axis=date_axis)
+ret = plot_TS(M, PARAM_NAME=PARAM_NAME, plot_name=plot_name, zoom_pres=zoom_pres, zoom_param=zoom_param, date_axis=date_axis, logscale=logscale)
