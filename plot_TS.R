@@ -81,10 +81,10 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, d
 	#image.plot(juld,pres,param)
     
 	# colorbar
-	par(mar=c(5,1,4,2.5))
+	par(mar=c(5,0,4,3.5))
 	image(y=colors$breaks, z=t(colors$breaks), col=colors$col, axes=FALSE)	
 	axis(4, cex.axis=0.8, mgp=c(0,0.5,0))
-	title(main=param_units)
+	mtext(param_units, side=4, line=2)
 	
 	dev.off()
 
