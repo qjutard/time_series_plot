@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() { 
-	echo "Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-z <zoom_pres>] [-Cdhl]
+	echo "Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-p <full_path>] [-z <zoom_pres>] [-Cdhl]
 Do '$0 -h' for help" 1>&2
 	exit 1 
 }
@@ -11,7 +11,7 @@ helprint() {
 
 BGTS does a time series plot of a BGC-ARGO parameter from a chosen float.
 
-Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-z <zoom_pres>] [-Cdhl]
+Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-p <full_path>] [-z <zoom_pres>] [-Cdhl]
 
 ### Options
 
@@ -25,6 +25,9 @@ Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-z
                    the default is 'BGTS_WMO_PARAM_NAME.png' where WMO is replaced by the
                    7 digit WMO number and PARAM_NAME by the variable name. Please use
                    a '.png' extension in your file name.
+[-p <full_path>] : Bypass the path_to_netcdf from pathways.R and specify the directory
+                   in which the netcdf files will be found, <full_paht> can be './' if 
+                   the current directory is correct.
 [-z <zoom_pres>] : Specify a pressure interval, should be formatted as 'MIN.min;MAX.max'
                    with the single quotation marks.
 [-C] : Use core argo data from core argo files, to be used with a core argo PARAM_NAME
@@ -45,8 +48,9 @@ date_axis=FALSE
 plot_name=NA
 core_files=FALSE
 logscale=FALSE
+full_path=NA
 
-while getopts W:P:c:n:z:dClh option
+while getopts W:P:c:n:p:z:dClh option
 do
 case "${option}"
 in
@@ -54,6 +58,7 @@ W) WMO=${OPTARG};;
 P) PARAM_NAME=${OPTARG};;
 c) zoom_param=${OPTARG};;
 n) plot_name=${OPTARG};;
+p) full_path=${OPTARG};;
 z) zoom_pres=${OPTARG};;
 d) date_axis=TRUE;;
 C) core_files=TRUE;;
@@ -64,4 +69,4 @@ esac
 done
 
 
-Rscript ~/Documents/time_series/time_series_plot/start_TS.R $WMO $PARAM_NAME $zoom_pres $zoom_param $date_axis $plot_name $core_files $logscale
+Rscript ~/Documents/time_series/time_series_plot/start_TS.R $WMO $PARAM_NAME $zoom_pres $zoom_param $date_axis $plot_name $core_files $logscale $full_path

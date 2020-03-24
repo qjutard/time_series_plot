@@ -27,6 +27,7 @@ date_axis = as.logical(uf[5])
 plot_name = uf[6]
 core_files = as.logical(uf[7])
 logscale = as.logical(uf[8])
+full_path = uf[9]
 
 if (WMO=="NA" | PARAM_NAME=="NA") {
     print("Please specify at least a WMO and a parameter name (see -h for help)")
@@ -35,6 +36,9 @@ if (WMO=="NA" | PARAM_NAME=="NA") {
 
 if (plot_name=="NA") {
     plot_name = paste("BGTS_", WMO, "_", PARAM_NAME, ".png", sep="")
+}
+if (full_path=="NA") {
+	full_path = NULL
 }
 
 # convert text inputs to usable data
@@ -56,7 +60,7 @@ if (zoom_param=="NA") {
 index_ifremer = read.table(path_to_index_ifremer, sep=",", header = T)
 #index_greylist = read.csv(path_to_index_greylist, sep = ",") # if greylist is useful at some point
 
-name_list = file_names(index_ifremer, path_to_netcdf, WMO, core_files)
+name_list = file_names(index_ifremer, path_to_netcdf, WMO, core_files, full_path)
 
 
 ### Get a list with information on all profiles
