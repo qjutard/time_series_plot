@@ -34,6 +34,7 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, d
 
 	}
 	
+
 	# transform to vector
 	pres = as.vector(pres)
 	param = as.vector(param)
@@ -48,17 +49,21 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, d
 	    param[which( param<zoom_param[1] )] = zoom_param[1]   
 	    param[which( param>zoom_param[2] )] = zoom_param[2]  
 	}
+
+	if (logscale) {
+	    param = log10(param)
+	}
 	
-	not_na_axis = which( !is.na(pres) & !is.na(param) )
+	not_na_axis = which( !is.na(pres) & is.finite(param) )
 	profile_id = profile_id[not_na_axis]
 	juld = juld[not_na_axis]
 	param_qc = param_qc[not_na_axis]
 	param = param[not_na_axis]
 	pres = pres[not_na_axis]
 	
+
 	# define labeling parameters
 	dates = as.Date(juld, origin='1950-01-01')
-	param_units = unique(param_units[which(!is.na(param_units))])
 	if (date_axis) {
 	    Xaxis = dates
 	    Xlabel = "Time"
@@ -67,14 +72,15 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, d
 	    Xlabel = "Profile number"
 	}
 	
+	param_units = unique(param_units[which(!is.na(param_units))])
 	if (logscale) {
-	    param = log10(param)
 	    param_units = paste("log10( ", param_units, " )")
 	}
-		
+	print(range(param))
 	colors = colormap(param, zlim=c(min(param), max(param)))
 	
-	
+
+	# create plot	
 	png(plot_name, width = 800, height = 400)
 
 	layout(t(1:2), widths=c(10,1))	
