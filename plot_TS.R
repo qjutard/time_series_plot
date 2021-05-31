@@ -2,7 +2,7 @@
 # This script does the time series plot
 #############################################################################
 
-plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, date_axis=FALSE, logscale=FALSE) {
+plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, zoom_x=NULL, date_axis=FALSE, logscale=FALSE) {
 
 	### find array dimensions
 	n_prof = dim(M)[2]
@@ -86,7 +86,7 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, d
 	layout(t(1:2), widths=c(10,1))	
 	
 	par(mar=c(5,4,4,0.5))
-	plot(Xaxis, pres, col=colors$zcol, pch=16, cex=0.5, ylim=rev(range(pres, na.rm=T)), xlab=Xlabel, ylab="Pressure (decibar)")
+	plot(Xaxis, pres, col=colors$zcol, pch=16, cex=0.5, xlim=zoom_x, ylim=rev(range(pres, na.rm=T)), xlab=Xlabel, ylab="Pressure (decibar)")
 	title(main=PARAM_NAME)
 	#image.plot(juld,pres,param)
     

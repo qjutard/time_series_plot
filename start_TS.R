@@ -28,6 +28,7 @@ plot_name = uf[6]
 core_files = as.logical(uf[7])
 logscale = as.logical(uf[8])
 full_path = uf[9]
+zoom_x = uf[10]
 
 if (WMO=="NA" | PARAM_NAME=="NA") {
     print("Please specify at least a WMO and a parameter name (see -h for help)")
@@ -54,6 +55,11 @@ if (zoom_param=="NA") {
     zoom_param = as.numeric(unlist(strsplit(zoom_param, ";")))
 }
 
+if (zoom_x=="NA") {
+    zoom_x = NULL
+} else {
+    zoom_x = as.numeric(unlist(strsplit(zoom_x, ";")))
+}
 
 ### Build list of file names from WMO and argo_index
 
@@ -69,4 +75,4 @@ M = mcmapply(open_profiles, name_list, MoreArgs=list(PARAM_NAME, core_files), mc
 
 
 ### plot
-ret = plot_TS(M, PARAM_NAME=PARAM_NAME, plot_name=plot_name, zoom_pres=zoom_pres, zoom_param=zoom_param, date_axis=date_axis, logscale=logscale)
+ret = plot_TS(M, PARAM_NAME=PARAM_NAME, plot_name=plot_name, zoom_pres=zoom_pres, zoom_param=zoom_param, zoom_x=zoom_x, date_axis=date_axis, logscale=logscale)

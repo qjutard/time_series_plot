@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() { 
-	echo "Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-p <full_path>] [-z <zoom_pres>] [-Cdhl]
+	echo "Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-p <full_path>] [-x <zoom_x>] [-z <zoom_pres>] [-Cdhl]
 Do '$0 -h' for help" 1>&2
 	exit 1 
 }
@@ -30,6 +30,8 @@ Usage: $0 -W <WMO_number> -P <PARAM_NAME> [-c <zoom_param>] [-n <plot_name>] [-p
                    the current directory is correct.
 [-z <zoom_pres>] : Specify a pressure interval, should be formatted as 'MIN.min;MAX.max'
                    with the single quotation marks.
+[-x <zoom_x>] : Specify an interval for the x axis (either dates or cycle numbers), 
+								should be formatted as 'MIN.min;MAX.max' with the single quotation marks.
 [-C] : Use core argo data from core argo files, to be used with a core argo PARAM_NAME
 [-d] : Use dates as horizontal axis instead of profile index.
 [-h] : help
@@ -44,13 +46,14 @@ WMO=NA
 PARAM_NAME=NA
 zoom_pres=NA
 zoom_param=NA
+zoom_x=NA
 date_axis=FALSE
 plot_name=NA
 core_files=FALSE
 logscale=FALSE
 full_path=NA
 
-while getopts W:P:c:n:p:z:dClh option
+while getopts W:P:c:n:p:z:x:dClh option
 do
 case "${option}"
 in
@@ -60,6 +63,7 @@ c) zoom_param=${OPTARG};;
 n) plot_name=${OPTARG};;
 p) full_path=${OPTARG};;
 z) zoom_pres=${OPTARG};;
+x) zoom_x=${OPTARG};;
 d) date_axis=TRUE;;
 C) core_files=TRUE;;
 l) logscale=TRUE;;
@@ -69,4 +73,4 @@ esac
 done
 
 
-Rscript ~/Documents/time_series/time_series_plot/start_TS.R $WMO $PARAM_NAME $zoom_pres $zoom_param $date_axis $plot_name $core_files $logscale $full_path
+Rscript ~/Documents/time_series/time_series_plot/start_TS.R $WMO $PARAM_NAME $zoom_pres $zoom_param $date_axis $plot_name $core_files $logscale $full_path $zoom_x
