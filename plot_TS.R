@@ -2,7 +2,7 @@
 # This script does the time series plot
 #############################################################################
 
-plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, zoom_x=NULL, date_axis=FALSE, logscale=FALSE) {
+plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, zoom_x=NULL, date_axis=FALSE, logscale=FALSE, max_qc=2) {
 
 	### find array dimensions
 	n_prof = dim(M)[2]
@@ -19,21 +19,21 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, z
 	juld = array(NA, c(n_depth, n_prof))
 	param_units = rep(NA, n_prof)
 	profile_id = array(NA, c(n_depth, n_prof))
-	
+
 	for (i in seq(1,n_prof)) {
-	
+
 		n_pres_i = length(M[,i]$PRES)
-	
-		pres[1:n_pres_i, i] = M[,i]$PRES 
-		param[1:n_pres_i, i] = M[,i]$PARAM 
-		param_qc[1:n_pres_i, i] = M[,i]$PARAM_QC 
+
+		pres[1:n_pres_i, i] = M[,i]$PRES
+		param[1:n_pres_i, i] = M[,i]$PARAM
+		param_qc[1:n_pres_i, i] = M[,i]$PARAM_QC
 		juld[1:n_pres_i, i] = rep(M[,i]$JULD, n_pres_i)
 		profile_id[1:n_pres_i, i] = rep(M[,i]$profile_id, n_pres_i)
-		
+
 	    param_units[i] = M[,i]$param_units
 
 	}
-	
+
 
 	# transform to vector
 	pres = as.vector(pres)
@@ -41,26 +41,29 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, z
 	param_qc = as.vector(param_qc)
 	juld = as.vector(juld)
 	profile_id = as.vector(profile_id)
-	
+
 	if (!is.null(zoom_pres)) {
 	    pres[which( pres<zoom_pres[1] | pres>zoom_pres[2] )] = NA
 	}
 	if (!is.null(zoom_param)) {
-	    param[which( param<zoom_param[1] )] = zoom_param[1]   
-	    param[which( param>zoom_param[2] )] = zoom_param[2]  
+	    param[which( param<zoom_param[1] )] = zoom_param[1]
+	    param[which( param>zoom_param[2] )] = zoom_param[2]
 	}
 
 	if (logscale) {
 	    param = log10(param)
 	}
-	
+
+  # remove all data with QC worse than max_qc (not data with QC>=5)
+  param[which( param_qc>max_qc & param_qc<=4 )] = NA
+
 	not_na_axis = which( !is.na(pres) & is.finite(param) )
 	profile_id = profile_id[not_na_axis]
 	juld = juld[not_na_axis]
 	param_qc = param_qc[not_na_axis]
 	param = param[not_na_axis]
 	pres = pres[not_na_axis]
-	
+
 
 	# define labeling parameters
 	dates = as.Date(juld, origin='1950-01-01')
@@ -71,31 +74,31 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, z
 	    Xaxis = profile_id
 	    Xlabel = "Profile number"
 	}
-	
+
 	param_units = unique(param_units[which(!is.na(param_units))])
 	if (logscale) {
 	    param_units = paste("log10( ", param_units, " )")
 	}
 	print(range(param))
 	colors = colormap(param, zlim=c(min(param), max(param)))
-	
 
-	# create plot	
+
+	# create plot
 	png(plot_name, width = 800, height = 400)
 
-	layout(t(1:2), widths=c(10,1))	
-	
+	layout(t(1:2), widths=c(10,1))
+
 	par(mar=c(5,4,4,0.5))
 	plot(Xaxis, pres, col=colors$zcol, pch=16, cex=0.5, xlim=zoom_x, ylim=rev(range(pres, na.rm=T)), xlab=Xlabel, ylab="Pressure (decibar)")
 	title(main=PARAM_NAME)
 	#image.plot(juld,pres,param)
-    
+
 	# colorbar
 	par(mar=c(5,0,4,3.5))
-	image(y=colors$breaks, z=t(colors$breaks), col=colors$col, axes=FALSE)	
+	image(y=colors$breaks, z=t(colors$breaks), col=colors$col, axes=FALSE)
 	axis(4, cex.axis=0.8, mgp=c(0,0.5,0))
 	mtext(param_units, side=4, line=2)
-	
+
 	dev.off()
 
 	return(0)
