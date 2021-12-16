@@ -55,7 +55,7 @@ plot_name=NA
 core_files=FALSE
 logscale=FALSE
 full_path=NA
-max_qc=NA
+max_qc=2
 
 while getopts W:P:c:n:p:q:z:x:dClh option
 do

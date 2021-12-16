@@ -54,7 +54,7 @@ plot_TS <- function(M, PARAM_NAME, plot_name, zoom_pres=NULL, zoom_param=NULL, z
 	    param = log10(param)
 	}
 
-  # remove all data with QC worse than max_qc (not data with QC>=5)
+  # remove all data with QC worse than max_qc (but not data with QC>=5)
   param[which( param_qc>max_qc & param_qc<=4 )] = NA
 
 	not_na_axis = which( !is.na(pres) & is.finite(param) )
